@@ -1,0 +1,90 @@
+# ----------------------
+# Python cache / bytecode
+# ----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ----------------------
+# Virtual environments
+# ----------------------
+.venv/
+venv/
+env/
+ENV/
+
+# ----------------------
+# Flask
+# ----------------------
+instance/
+.webassets-cache
+flask_session/
+
+# ----------------------
+# Environment variables
+# ----------------------
+.env
+.env.*
+*.env
+
+# ----------------------
+# Logs
+# ----------------------
+*.log
+logs/
+
+# ----------------------
+# OS files
+# ----------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----------------------
+# IDE / Editor configs
+# ----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ----------------------
+# Torrent-specific
+# ----------------------
+*.torrent
+downloaded_files/
+downloads/
+*.part
+*.tmp
+
+# ----------------------
+# Build / dist
+# ----------------------
+build/
+dist/
+*.egg-info/
+
+# ----------------------
+# SQLite / local DBs
+# ----------------------
+*.sqlite
+*.db
+
+# ----------------------
+# Coverage / testing
+# ----------------------
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ----------------------
+# Jupyter
+# ----------------------
+.ipynb_checkpoints/
+
+# ----------------------
+# System temp
+# ----------------------
+*.tmp
+*.bak

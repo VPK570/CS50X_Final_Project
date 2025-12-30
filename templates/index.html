@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyTorrent Web Client</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ PyTorrent Client</h1>
+            <span class="badge" id="status-badge">IDLE</span>
+        </header>
+
+        <div class="card control-panel">
+            <div class="input-group">
+                <input type="file" id="torrent-file" accept=".torrent">
+                <button id="btn-start" class="btn primary">Start Download</button>
+                <button id="btn-stop" class="btn danger" disabled>Stop</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card metric">
+                <h3>Download Speed</h3>
+                <div class="value"><span id="speed">0</span> <small>KB/s</small></div>
+            </div>
+            <div class="card metric">
+                <h3>Peers Connected</h3>
+                <div class="value" id="peers">0</div>
+            </div>
+            <div class="card metric">
+                <h3>Downloaded</h3>
+                <div class="value"><span id="downloaded">0</span> <small>MB</small></div>
+            </div>
+            <div class="card metric">
+                <h3>Total Size</h3>
+                <div class="value"><span id="total">0</span> <small>MB</small></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="progress-info">
+                <span id="filename">No file selected</span>
+                <span id="percent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="card terminal">
+            <h3>System Logs</h3>
+            <div class="log-window" id="log-window">
+                <div class="log-entry">System ready. Waiting for torrent...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
