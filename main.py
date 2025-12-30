@@ -2,8 +2,8 @@
 # parser.py -> calc_hash.py -> get_peers.py -> connect_to_peer.py -> connect_to_peer_async.py
 
 import asyncio
-from get_peers import get_peers_from_tracker
-from connect_to_peer_async import download_from_peers_async
+from torrent_client.get_peers import get_peers_from_tracker
+from torrent_client.connect_to_peer_async import download_from_peers_async
 
 async def main():    
     #  Get peers
@@ -14,7 +14,7 @@ async def main():
     
     # Connect with peers and start downloading
     success = await download_from_peers_async(
-        'one-piece.torrent',
+        'test.torrent',
         peers,
         'downloaded_file.mkv',
         max_peers=50

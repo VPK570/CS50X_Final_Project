@@ -3,13 +3,13 @@ import json
 import time
 from flask import Flask, render_template, request, Response, jsonify
 from werkzeug.utils import secure_filename
+from torrent_wrapper import get_torrent_output_info
 from torrent_wrapper import manager
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['DOWNLOAD_FOLDER'] = 'downloads'
 
-# Ensure directories exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
 
@@ -31,11 +31,11 @@ def start_download():
         torrent_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(torrent_path)
         
-        # Determine output filename (removing .torrent extension)
-        output_name = filename.replace('.torrent', '') + '.bin' # Defaulting to .bin as per existing code
-        output_path = os.path.join(app.config['DOWNLOAD_FOLDER'], output_name)
-        
-        success = manager.start_download(torrent_path, output_path)
+        success = manager.start_download(
+            torrent_path,
+            app.config['DOWNLOAD_FOLDER']
+        )
+
         if success:
             return jsonify({"message": "Download started"})
         else:

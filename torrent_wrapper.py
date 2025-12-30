@@ -6,6 +6,7 @@ import time
 import queue
 from io import StringIO
 # Import your existing modules from the subdirectory
+from torrent_client.parser import bdecode
 from torrent_client.connect_to_peer_async import TorrentDownloader
 from torrent_client.get_peers import get_peers_from_tracker
 
@@ -45,17 +46,26 @@ class TorrentManager:
         self.last_bytes = 0
         self.last_time = time.time()
 
-    def start_download(self, torrent_path, output_path):
-        """Starts the asyncio loop in a background thread."""
+    def start_download(self, torrent_path, download_root):
         if self.thread and self.thread.is_alive():
             return False
-            
+
         self.reset_state()
         self.state["status"] = "RUNNING"
-        
+
+        # Determine output path from torrent metadata
+        info = get_torrent_output_info(torrent_path)
+
+        if info["type"] == "single":
+            output_path = os.path.join(download_root, info["name"])
+            self.state["filename"] = info["name"]
+        else:
+            output_path = os.path.join(download_root, info["folder"])
+            self.state["filename"] = info["folder"]
+
         # Capture stdout
         sys.stdout = LogCapture(self.log_queue)
-        
+
         # Start background thread
         self.thread = threading.Thread(
             target=self._run_async_loop,
@@ -64,6 +74,7 @@ class TorrentManager:
         )
         self.thread.start()
         return True
+
 
     def stop_download(self):
         """Cancels the running task."""
@@ -124,7 +135,6 @@ class TorrentManager:
             
             # Update static info
             self.state["total_size"] = downloader.total_length
-            self.state["filename"] = os.path.basename(output_path)
 
             # 3. Start Monitor Task (Polling)
             monitor = asyncio.create_task(self._monitor_progress(downloader))
@@ -191,6 +201,35 @@ class TorrentManager:
         data["logs"] = new_logs
         
         return data
+
+def get_torrent_output_info(torrent_path):
+    with open(torrent_path, 'rb') as f:
+        data = bdecode(f.read())
+
+    info = data[b'info']
+
+    # Single-file torrent
+    if b'length' in info:
+        filename = info[b'name'].decode('utf-8')
+        return {
+            "type": "single",
+            "name": filename
+        }
+
+    # Multi-file torrent
+    elif b'files' in info:
+        folder = info[b'name'].decode('utf-8')
+        files = []
+        for f in info[b'files']:
+            path = [p.decode('utf-8') for p in f[b'path']]
+            files.append("/".join(path))
+
+        return {
+            "type": "multi",
+            "folder": folder,
+            "files": files
+        }
+
 
 # Global Instance
 manager = TorrentManager()
