@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const btnStart = document.getElementById('btn-start');
     const btnStop = document.getElementById('btn-stop');
+    // [NEW] Save Button
+    const btnSave = document.getElementById('btn-save');
+    
     const fileInput = document.getElementById('torrent-file');
     const logWindow = document.getElementById('log-window');
     
-    // Status Elements
     const els = {
         status: document.getElementById('status-badge'),
         speed: document.getElementById('speed'),
@@ -16,16 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
         bar: document.getElementById('progress-fill')
     };
 
-    // Helper: Bytes to MB
     const toMB = (bytes) => (bytes / (1024 * 1024)).toFixed(2);
 
-    // 1. Start Stream Listener
     const evtSource = new EventSource("/stream");
     
     evtSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
         
-        // Update Metrics
         els.status.textContent = data.status;
         els.filename.textContent = data.filename || "No file active";
         els.speed.textContent = data.speed_kbps;
@@ -35,18 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
         els.percent.textContent = data.progress_percent + "%";
         els.bar.style.width = data.progress_percent + "%";
 
-        // Update Buttons
+        // Button State Logic
         if (data.status === 'RUNNING') {
             btnStart.disabled = true;
             btnStop.disabled = false;
+            btnSave.disabled = true;
             els.status.style.color = '#22c55e';
+        } else if (data.status === 'COMPLETED') {
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            btnSave.disabled = false; // Enable Save when done
+            els.status.style.color = '#3b82f6';
         } else {
             btnStart.disabled = false;
             btnStop.disabled = true;
+            btnSave.disabled = true;
             els.status.style.color = data.status === 'ERROR' ? '#ef4444' : '#fff';
         }
 
-        // Append Logs
         if (data.logs && data.logs.length > 0) {
             data.logs.forEach(log => {
                 const div = document.createElement('div');
@@ -58,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 2. Button Handlers
     btnStart.addEventListener('click', async () => {
         if (!fileInput.files[0]) {
             alert("Please select a .torrent file first");
@@ -67,6 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
+        
+        btnSave.disabled = true;
 
         try {
             const res = await fetch('/start', {
@@ -82,5 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnStop.addEventListener('click', async () => {
         await fetch('/stop', { method: 'POST' });
+    });
+
+    // [NEW] Download trigger
+    btnSave.addEventListener('click', () => {
+        window.location.href = '/get_file';
     });
 });

@@ -1,15 +1,16 @@
 import os
 import json
 import time
-from flask import Flask, render_template, request, Response, jsonify
+# [CHANGED] Added send_from_directory to serve files
+from flask import Flask, render_template, request, Response, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
-from torrent_wrapper import get_torrent_output_info
 from torrent_wrapper import manager
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['DOWNLOAD_FOLDER'] = 'downloads'
 
+# Ensure directories exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
 
@@ -31,6 +32,7 @@ def start_download():
         torrent_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(torrent_path)
         
+        # Manager now handles filename extraction internally
         success = manager.start_download(
             torrent_path,
             app.config['DOWNLOAD_FOLDER']
@@ -45,6 +47,27 @@ def start_download():
 def stop_download():
     manager.stop_download()
     return jsonify({"message": "Download stopping..."})
+
+# [NEW] Route to download the file to user's computer
+@app.route('/get_file')
+def get_file():
+    # Only allow download if status is COMPLETED
+    if manager.state['status'] != 'COMPLETED':
+        return "File not ready", 400
+    
+    filename = manager.state['filename']
+    directory = app.config['DOWNLOAD_FOLDER']
+    
+    # Verify the file exists
+    full_path = os.path.join(directory, filename)
+    if not os.path.exists(full_path):
+        return "File not found on server", 404
+
+    if os.path.isdir(full_path):
+        return "Folder download not supported (zip required)", 400
+
+    # 'as_attachment=True' forces the browser to show 'Save As'
+    return send_from_directory(directory, filename, as_attachment=True)
 
 @app.route('/stream')
 def stream():
