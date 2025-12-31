@@ -47,16 +47,13 @@ class TorrentManager:
         self.reset_state()
         self.state["status"] = "RUNNING"
 
-        # [FIX] Extract real filename/extension here
         try:
             info = get_torrent_output_info(torrent_path)
             if info["type"] == "single":
-                # Use the name from the torrent metadata (includes extension)
                 target_name = info["name"]
                 output_path = os.path.join(download_root, target_name)
                 self.state["filename"] = target_name
             else:
-                # Multi-file torrents create a folder
                 target_name = info["folder"]
                 output_path = os.path.join(download_root, target_name)
                 self.state["filename"] = target_name
@@ -187,7 +184,6 @@ def get_torrent_output_info(torrent_path):
 
     info = data[b'info']
 
-    # Safely decode utf-8, ignoring errors to prevent crashes
     if b'length' in info:
         filename = info[b'name'].decode('utf-8', errors='ignore')
         return {

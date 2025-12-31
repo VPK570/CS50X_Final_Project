@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const btnStart = document.getElementById('btn-start');
     const btnStop = document.getElementById('btn-stop');
-    // [NEW] Save Button
     const btnSave = document.getElementById('btn-save');
     
     const fileInput = document.getElementById('torrent-file');
@@ -34,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         els.percent.textContent = data.progress_percent + "%";
         els.bar.style.width = data.progress_percent + "%";
 
-        // Button State Logic
         if (data.status === 'RUNNING') {
             btnStart.disabled = true;
             btnStop.disabled = false;
@@ -43,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (data.status === 'COMPLETED') {
             btnStart.disabled = false;
             btnStop.disabled = true;
-            btnSave.disabled = false; // Enable Save when done
+            btnSave.disabled = false;
             els.status.style.color = '#3b82f6';
         } else {
             btnStart.disabled = false;
@@ -90,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         await fetch('/stop', { method: 'POST' });
     });
 
-    // [NEW] Download trigger
     btnSave.addEventListener('click', () => {
         window.location.href = '/get_file';
     });

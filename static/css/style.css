@@ -68,7 +68,6 @@ h1 { margin: 0; font-weight: 700; }
 
 .metric small { font-size: 1rem; color: var(--text-secondary); }
 
-/* Inputs and Buttons */
 .input-group {
     display: flex;
     gap: 1rem;
@@ -96,7 +95,6 @@ input[type="file"] {
 .btn.primary { background-color: var(--accent); color: white; }
 .btn.danger { background-color: var(--danger); color: white; }
 
-/* Progress Bar */
 .progress-info {
     display: flex;
     justify-content: space-between;
@@ -117,7 +115,6 @@ input[type="file"] {
     transition: width 0.5s ease-out;
 }
 
-/* Terminal */
 .terminal h3 { margin-top: 0; }
 .log-window {
     height: 200px;
@@ -131,9 +128,8 @@ input[type="file"] {
 
 .log-entry { margin-bottom: 4px; color: #cbd5e1; }
 
-/* Add this to your existing CSS */
 .btn.success {
-    background-color: #10b981; /* Green color */
+    background-color: #10b981;
     color: white;
 }
 .btn.success:disabled {

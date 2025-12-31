@@ -42,7 +42,6 @@ try:
     
     with open(torrent_file, 'rb') as f:
         torrent_data = f.read()
-    # decoded = bdecode(torrent_data)
 
     info_hash = calculate_info_hash(torrent_file)
     print("\nInfo Hash (hex):", info_hash.hex())
