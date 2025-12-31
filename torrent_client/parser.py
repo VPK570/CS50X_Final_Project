@@ -84,9 +84,3 @@ def bencode(data):
         return b''.join(result)
     else:
         raise ValueError(f"Unsupported type for bencoding: {type(data)}")
-    
-with open('test.torrent', 'rb') as f:
-    torrent_data = f.read()
-
-decoded = bdecode(torrent_data)
-pprint.pprint(decoded[b'info'])

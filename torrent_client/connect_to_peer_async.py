@@ -394,28 +394,3 @@ async def download_from_peers_async(torrent_file, peers, output_file, max_peers=
     downloader = TorrentDownloader(torrent_file, peers, max_peers)
     success = await downloader.download(output_file)
     return success
-
-from torrent_client.get_peers import get_peers_from_tracker
-
-# Example usage
-if __name__ == "__main__":
-    async def main():
-        peers = get_peers_from_tracker('test.torrent')
-        print(peers)
-        
-        success = await download_from_peers_async(
-            'test.torrent',
-            peers,
-            'downloaded_file.bin',
-            max_peers=50
-        )
-        
-        if success:
-            print("Download successful!")
-        else:
-            print("Download failed or incomplete")
-    
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\nDownload interrupted by user")

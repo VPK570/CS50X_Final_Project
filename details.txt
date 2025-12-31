@@ -1,0 +1,6 @@
+Project Title: PyTorrent – Simple BitTorrent Client with Web Dashboard
+Name: VP Krishna
+GitHub: VPK570
+EdX: VPK570
+City & Country: Chennai, India
+Date of Recording 12/31/2025
