@@ -130,3 +130,14 @@ input[type="file"] {
 }
 
 .log-entry { margin-bottom: 4px; color: #cbd5e1; }
+
+/* Add this to your existing CSS */
+.btn.success {
+    background-color: #10b981; /* Green color */
+    color: white;
+}
+.btn.success:disabled {
+    background-color: #064e3b;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
